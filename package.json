@@ -1,0 +1,12 @@
+{
+  "name": "govsafe360-do-zero",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/servidor-local.mjs",
+    "check:js": "node --check js/app.js"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}
