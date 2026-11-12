@@ -1,9 +1,8 @@
-// Marco 1: painel estático com oito cenários FICTÍCIOS.
-// Os campos usam os códigos oficiais de docs/REGRAS_GOVERNANCA.md.
-// A decisão está fixa nos dados apenas nesta etapa; no Marco 2 ela passa
-// a ser calculada por js/politica.js (os resultados devem ser os mesmos).
+// Marco 2: painel com oito cenários FICTÍCIOS classificados pelo motor único
+// js/politica.js (carregado antes deste arquivo). Nenhuma decisão fica fixa aqui.
 
-const DECISOES = ['Permitido', 'Condicionado', 'Não autorizado'];
+const { classificar, DECISAO } = globalThis.GovsafePolitica;
+const DECISOES = [DECISAO.PERMITIDO, DECISAO.CONDICIONADO, DECISAO.NAO_AUTORIZADO];
 
 // Rótulos legíveis para os códigos da taxonomia.
 const ROTULOS = {
@@ -14,30 +13,26 @@ const ROTULOS = {
 
 const CENARIOS = [
   { id: 'C01', titulo: 'Resumo de norma pública fictícia', finalidade: 'Apoiar estudo interno da equipe',
-    dados: 'publico', ambiente: 'desenvolvimento', autonomia: 'leitura', decisao: 'Permitido',
-    motivo: 'Regra 5: dado público, desenvolvimento e apenas leitura.' },
+    dados: 'publico', ambiente: 'desenvolvimento', autonomia: 'leitura' },
   { id: 'C02', titulo: 'Proposta de texto de FAQ', finalidade: 'Sugerir redação para página de ajuda',
-    dados: 'publico', ambiente: 'desenvolvimento', autonomia: 'proposta', decisao: 'Permitido',
-    motivo: 'Regra 5: dado público, desenvolvimento e apenas proposta.' },
+    dados: 'publico', ambiente: 'desenvolvimento', autonomia: 'proposta' },
   { id: 'C03', titulo: 'Análise de planilha interna sintética', finalidade: 'Identificar padrões em dados de teste',
-    dados: 'interno', ambiente: 'desenvolvimento', autonomia: 'leitura', decisao: 'Condicionado',
-    motivo: 'Regra 4: dado interno exige revisão humana.' },
+    dados: 'interno', ambiente: 'desenvolvimento', autonomia: 'leitura' },
   { id: 'C04', titulo: 'Leitura de página web externa', finalidade: 'Coletar referências para relatório',
-    dados: 'externo', ambiente: 'homologacao', autonomia: 'leitura', decisao: 'Condicionado',
-    motivo: 'Regra 4: conteúdo externo é dado, não instrução; sem autoridade instrucional.' },
+    dados: 'externo', ambiente: 'homologacao', autonomia: 'leitura' },
   { id: 'C05', titulo: 'Consulta a painel em produção', finalidade: 'Conferir indicador público',
-    dados: 'publico', ambiente: 'producao', autonomia: 'leitura', decisao: 'Condicionado',
-    motivo: 'Regra 3: produção em leitura, sem autorização para ação real.' },
+    dados: 'publico', ambiente: 'producao', autonomia: 'leitura' },
   { id: 'C06', titulo: 'Edição de cadastro em produção', finalidade: 'Corrigir campo de registro',
-    dados: 'interno', ambiente: 'producao', autonomia: 'edicao', decisao: 'Não autorizado',
-    motivo: 'Regra 2: edição em produção não é permitida.' },
+    dados: 'interno', ambiente: 'producao', autonomia: 'edicao' },
   { id: 'C07', titulo: 'Uso de credencial fictícia', finalidade: 'Acessar sistema para automação',
-    dados: 'credencial', ambiente: 'desenvolvimento', autonomia: 'execucao', decisao: 'Não autorizado',
-    motivo: 'Regra 1: credenciais nunca são solicitadas nem armazenadas.' },
+    dados: 'credencial', ambiente: 'desenvolvimento', autonomia: 'execucao' },
   { id: 'C08', titulo: 'Exclusão em massa de registros', finalidade: 'Limpar base de homologação',
-    dados: 'interno', ambiente: 'homologacao', autonomia: 'critica', decisao: 'Não autorizado',
-    motivo: 'Regra 1: ação crítica e irreversível não pode ser automatizada.' }
-];
+    dados: 'interno', ambiente: 'homologacao', autonomia: 'critica' }
+].map((c) => {
+  const r = classificar(c);
+  // Alertas (ex.: conteúdo externo) são exibidos junto ao motivo, sem mudar o layout.
+  return { ...c, decisao: r.decisao, motivo: [r.motivo, ...r.alertas].join(' ') };
+});
 
 // Classe CSS de cada decisão (a cor sempre acompanha o texto, nunca o substitui).
 function classeDecisao(decisao) {
@@ -103,4 +98,4 @@ function renderizarTabela(cenarios) {
 
 renderizarTotais(CENARIOS);
 renderizarTabela(CENARIOS);
-console.info(`GOVSAFE360 M1: ${CENARIOS.length} cenários fictícios carregados.`);
+console.info(`GOVSAFE360 M2: ${CENARIOS.length} cenários fictícios classificados pelo motor.`);
