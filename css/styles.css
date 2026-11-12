@@ -1,1 +1,151 @@
-*{box-sizing:border-box}body{margin:0;background:#f1f6f2;font-family:Arial,Helvetica,sans-serif;color:#153e2b}main{max-width:1080px;margin:32px auto;background:#fff;padding:36px;border:1px solid #dae7de;border-radius:16px}.eyebrow{color:#27754e;font-size:12px;font-weight:800;letter-spacing:1px}h1{font-size:36px}section{margin-top:20px;padding:20px;border-radius:12px;border:1px solid #d5e4d9}@media(max-width:600px){main{margin:0;padding:20px;border-radius:0}}
+/* GOVSAFE 360 · Marco 1 — layout responsivo e acessível */
+:root {
+  --fundo: #f1f6f2;
+  --superficie: #ffffff;
+  --texto: #153e2b;
+  --texto-suave: #3d5c4a;
+  --borda: #d5e4d9;
+  --destaque: #27754e;
+  --foco: #0b57d0;
+  --permitido-fundo: #e3f4e8; --permitido-texto: #1b5e36;
+  --condicionado-fundo: #fff4d6; --condicionado-texto: #7a4b00;
+  --nao-fundo: #fde4e4; --nao-texto: #9b1c1c;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+/* Link "pular para o conteúdo": só aparece ao receber foco pelo teclado */
+.pular {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  background: var(--superficie);
+  color: var(--texto);
+  padding: 8px 12px;
+  border-radius: 6px;
+  z-index: 10;
+}
+.pular:focus { top: 8px; }
+
+/* Aviso ostensivo (R10) */
+.aviso {
+  background: #7a4b00;
+  color: #fff;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Cabeçalho e navegação */
+.topo {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.eyebrow { color: var(--destaque); font-size: 12px; font-weight: 800; letter-spacing: 1px; margin: 0; }
+.nome { margin: 0; font-size: 22px; font-weight: 800; }
+
+.menu { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.menu a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto);
+  font-weight: 700;
+  text-decoration: none;
+}
+.menu a:hover { background: var(--permitido-fundo); }
+
+main {
+  max-width: 1080px;
+  margin: 16px auto 32px;
+  background: var(--superficie);
+  padding: 36px;
+  border: 1px solid #dae7de;
+  border-radius: 16px;
+}
+
+h1 { font-size: 34px; margin: 0 0 8px; }
+h2 { margin-top: 0; font-size: 22px; }
+#status { color: var(--texto-suave); }
+
+section {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--borda);
+  scroll-margin-top: 16px;
+}
+
+/* Cards de totais */
+.totais {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--borda);
+}
+.card-numero { font-size: 32px; font-weight: 800; }
+.card-rotulo { font-size: 14px; font-weight: 700; }
+.total-geral { background: #eef3f0; }
+
+/* Cores de decisão — sempre acompanhadas do texto da decisão */
+.decisao-permitido { background: var(--permitido-fundo); color: var(--permitido-texto); }
+.decisao-condicionado { background: var(--condicionado-fundo); color: var(--condicionado-texto); }
+.decisao-nao-autorizado { background: var(--nao-fundo); color: var(--nao-texto); }
+
+/* Tabela: a rolagem horizontal fica SOMENTE aqui (CA10) */
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 14px; }
+caption { text-align: left; padding: 10px 12px; font-weight: 700; color: var(--texto-suave); }
+th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-top: 1px solid var(--borda); }
+th { background: #eef3f0; white-space: nowrap; }
+
+.selo {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.limites { margin: 0; padding-left: 20px; }
+
+/* Foco visível para navegação por teclado */
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
+main:focus { outline: none; }
+
+@media (max-width: 600px) {
+  main { margin: 12px 0 0; padding: 16px; border-radius: 0; border-left: 0; border-right: 0; }
+  h1 { font-size: 26px; }
+  section { padding: 14px; }
+  .totais { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

@@ -1,1 +1,80 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GOVSAFE 360 · Construção assistida</title><link rel="stylesheet" href="css/styles.css"></head><body><main><p class="eyebrow">SEMA/MT · UNIDADE VI · LABORATÓRIO</p><h1>GOVSAFE 360</h1><p id="status">Marco 0 — estrutura inicial, sem implementação das regras de negócio.</p><section id="dashboard"><h2>Painel</h2><p>Este componente será construído com o Claude no Marco 1.</p></section><section id="matriz"><h2>Matriz de autonomia</h2><p>A classificação será implementada nos Marcos 2 e 3.</p></section></main><script src="js/app.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GOVSAFE 360 · Construção assistida</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- R10: aviso ostensivo, sempre visível no topo -->
+  <div class="aviso" role="note">
+    <strong>Aviso:</strong> laboratório didático com dados fictícios.
+    Não é sistema institucional homologado e suas decisões não constituem autorização oficial.
+  </div>
+
+  <header class="topo">
+    <div class="marca">
+      <p class="eyebrow">SEMA/MT · UNIDADE VI · LABORATÓRIO</p>
+      <p class="nome">GOVSAFE 360</p>
+    </div>
+    <nav aria-label="Seções da página">
+      <ul class="menu">
+        <li><a href="#dashboard">Painel</a></li>
+        <li><a href="#matriz">Matriz</a></li>
+        <li><a href="#limites">Limites</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    <h1>Painel de governança de IA</h1>
+    <p id="status">Marco 1 — painel estático. As decisões estão fixas nos dados; o motor de classificação chega no Marco 2.</p>
+
+    <section id="dashboard" aria-labelledby="titulo-painel">
+      <h2 id="titulo-painel">Painel</h2>
+      <ul class="totais" id="totais" aria-label="Totais de cenários por decisão">
+        <!-- preenchido por js/app.js -->
+      </ul>
+    </section>
+
+    <section id="matriz" aria-labelledby="titulo-matriz">
+      <h2 id="titulo-matriz">Matriz de autonomia</h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-labelledby="titulo-matriz">
+        <table>
+          <caption>Oito cenários sintéticos pré-carregados</caption>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Cenário</th>
+              <th scope="col">Finalidade</th>
+              <th scope="col">Tipo de dado</th>
+              <th scope="col">Ambiente</th>
+              <th scope="col">Autonomia</th>
+              <th scope="col">Decisão</th>
+              <th scope="col">Motivo</th>
+            </tr>
+          </thead>
+          <tbody id="linhas">
+            <!-- preenchido por js/app.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="limites" aria-labelledby="titulo-limites">
+      <h2 id="titulo-limites">Limites do laboratório</h2>
+      <ul class="limites">
+        <li>Não é sistema institucional homologado pela SEMA/MT.</li>
+        <li>Usa somente dados fictícios; não informe dados pessoais, senhas ou tokens.</li>
+        <li>Não há login, banco de dados, API nem conexão com sistemas oficiais.</li>
+        <li>As decisões são didáticas e não substituem normas nem autorizações oficiais.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
