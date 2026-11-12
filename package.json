@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/servidor-local.mjs",
-    "check:js": "node --check js/app.js && node --check js/politica.js",
+    "check:js": "node --check js/app.js && node --check js/politica.js && node --check js/cenarios.js",
     "test:policy": "node --test \"tests/**/*.test.mjs\""
   },
   "engines": {

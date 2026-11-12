@@ -23,6 +23,7 @@
     <nav aria-label="Seções da página">
       <ul class="menu">
         <li><a href="#dashboard">Painel</a></li>
+        <li><a href="#cadastro">Cadastro</a></li>
         <li><a href="#matriz">Matriz</a></li>
         <li><a href="#limites">Limites</a></li>
       </ul>
@@ -31,7 +32,8 @@
 
   <main id="conteudo" tabindex="-1">
     <h1>Painel de governança de IA</h1>
-    <p id="status">Marco 2 — decisões calculadas pelo motor único de regras (js/politica.js), conservador e explicável.</p>
+    <p id="status">Marco 3 — cadastro, busca e filtro com dados salvos apenas neste navegador. Decisões calculadas pelo motor único (js/politica.js).</p>
+    <p id="aviso-armazenamento" class="alerta" role="status" hidden></p>
 
     <section id="dashboard" aria-labelledby="titulo-painel">
       <h2 id="titulo-painel">Painel</h2>
@@ -40,8 +42,67 @@
       </ul>
     </section>
 
+    <section id="cadastro" aria-labelledby="titulo-cadastro">
+      <h2 id="titulo-cadastro">Cadastro de cenário fictício</h2>
+      <p class="ajuda">Use apenas dados inventados. A decisão não é escolhida: ela é calculada pelo motor de regras.</p>
+      <form id="form-cenario" novalidate>
+        <div class="campos">
+          <div class="campo campo-largo">
+            <label for="f-titulo">Título <span class="obrigatorio">(obrigatório)</span></label>
+            <input id="f-titulo" name="titulo" type="text" maxlength="80" required aria-describedby="erro-titulo">
+            <p class="erro" id="erro-titulo" hidden></p>
+          </div>
+          <div class="campo campo-largo">
+            <label for="f-finalidade">Finalidade <span class="obrigatorio">(obrigatório)</span></label>
+            <input id="f-finalidade" name="finalidade" type="text" maxlength="160" required aria-describedby="erro-finalidade">
+            <p class="erro" id="erro-finalidade" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="f-dados">Tipo de dado <span class="obrigatorio">(obrigatório)</span></label>
+            <select id="f-dados" name="dados" required aria-describedby="erro-dados"></select>
+            <p class="erro" id="erro-dados" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="f-ambiente">Ambiente <span class="obrigatorio">(obrigatório)</span></label>
+            <select id="f-ambiente" name="ambiente" required aria-describedby="erro-ambiente"></select>
+            <p class="erro" id="erro-ambiente" hidden></p>
+          </div>
+          <div class="campo">
+            <label for="f-autonomia">Autonomia <span class="obrigatorio">(obrigatório)</span></label>
+            <select id="f-autonomia" name="autonomia" required aria-describedby="erro-autonomia"></select>
+            <p class="erro" id="erro-autonomia" hidden></p>
+          </div>
+          <div class="campo campo-largo">
+            <label for="f-justificativa">Justificativa <span class="obrigatorio">(obrigatório)</span></label>
+            <textarea id="f-justificativa" name="justificativa" rows="3" maxlength="300" required aria-describedby="erro-justificativa"></textarea>
+            <p class="erro" id="erro-justificativa" hidden></p>
+          </div>
+        </div>
+        <p class="previa" id="previa" aria-live="polite">Prévia da decisão: preencha tipo de dado, ambiente e autonomia.</p>
+        <div class="acoes">
+          <button type="submit" class="botao">Cadastrar cenário</button>
+          <button type="reset" class="botao botao-secundario">Limpar formulário</button>
+        </div>
+        <p id="mensagem-cadastro" class="mensagem" role="status"></p>
+      </form>
+    </section>
+
     <section id="matriz" aria-labelledby="titulo-matriz">
       <h2 id="titulo-matriz">Matriz de autonomia</h2>
+      <div class="filtros" role="search">
+        <div class="campo">
+          <label for="busca">Buscar por ID, título ou finalidade</label>
+          <input id="busca" type="search" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="filtro-decisao">Filtrar por decisão</label>
+          <select id="filtro-decisao">
+            <option value="">Todas</option>
+          </select>
+        </div>
+      </div>
+      <p id="contagem" class="contagem" aria-live="polite"></p>
+      <p id="vazio" class="vazio" hidden>Nenhum cenário encontrado. Ajuste a busca ou o filtro, ou cadastre um cenário.</p>
       <div class="table-wrap" tabindex="0" role="region" aria-labelledby="titulo-matriz">
         <table>
           <caption>Oito cenários sintéticos pré-carregados</caption>
@@ -71,11 +132,17 @@
         <li>Usa somente dados fictícios; não informe dados pessoais, senhas ou tokens.</li>
         <li>Não há login, banco de dados, API nem conexão com sistemas oficiais.</li>
         <li>As decisões são didáticas e não substituem normas nem autorizações oficiais.</li>
+        <li>Os cenários ficam salvos só neste navegador (localStorage). Em computador compartilhado, limpe ao terminar.</li>
       </ul>
+      <div class="acoes">
+        <button type="button" id="restaurar" class="botao botao-secundario">Restaurar exemplos</button>
+        <button type="button" id="limpar" class="botao botao-perigo">Limpar dados locais</button>
+      </div>
     </section>
   </main>
 
   <script src="js/politica.js"></script>
+  <script src="js/cenarios.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
