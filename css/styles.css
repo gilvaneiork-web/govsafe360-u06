@@ -124,7 +124,7 @@ section {
   border: 1px solid var(--borda);
   border-radius: 10px;
 }
-table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 14px; }
+table { width: 100%; min-width: 1000px; border-collapse: collapse; font-size: 14px; }
 caption { text-align: left; padding: 10px 12px; font-weight: 700; color: var(--texto-suave); }
 th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-top: 1px solid var(--borda); }
 th { background: #eef3f0; white-space: nowrap; }
@@ -220,6 +220,35 @@ textarea { resize: vertical; }
   color: var(--texto-suave);
   font-weight: 700;
 }
+
+/* ---------- Marco 4: revisão, auditoria, exportações ---------- */
+/* Selos de revisão usam contorno (não fundo) para não serem confundidos com a decisão. */
+.revisao-pendente { border: 1px dashed var(--texto-suave); color: var(--texto-suave); background: var(--superficie); }
+.revisao-aprovado { border: 2px solid var(--permitido-texto); color: var(--permitido-texto); background: var(--superficie); }
+.revisao-rejeitado { border: 2px solid var(--nao-texto); color: var(--nao-texto); background: var(--superficie); }
+
+.barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+.barra .contagem { margin: 0; }
+
+.nota { margin: 4px 0 0; font-size: 14px; color: var(--texto-suave); }
+
+.grupo-opcoes { border: 0; margin: 0; padding: 0; }
+.grupo-opcoes legend { font-weight: 700; font-size: 14px; padding: 0; margin-bottom: 4px; }
+.opcao { display: flex; align-items: center; gap: 8px; font-weight: 400; padding: 4px 0; }
+.opcao input { width: auto; margin: 0; }
+.opcao:has(input:disabled) { color: var(--texto-suave); text-decoration: line-through; }
+
+.lista-auditoria { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.lista-auditoria li { padding: 10px 12px; border: 1px solid var(--borda); border-radius: 8px; }
+.evento-cabecalho { margin: 0; font-size: 13px; font-weight: 700; color: var(--texto-suave); }
+.evento-resumo { margin: 2px 0 0; overflow-wrap: anywhere; }
 
 @media (max-width: 600px) {
   main { margin: 12px 0 0; padding: 16px; border-radius: 0; border-left: 0; border-right: 0; }

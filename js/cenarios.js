@@ -11,7 +11,9 @@
   const LIMITES = Object.freeze({ titulo: 80, finalidade: 160, justificativa: 300 });
   const CAMPOS_TEXTO = Object.freeze(['titulo', 'finalidade', 'justificativa']);
   const CAMPOS_TAXONOMIA = Object.freeze(['dados', 'ambiente', 'autonomia']);
-  const CAMPOS_GRAVADOS = Object.freeze(['id', ...CAMPOS_TEXTO, ...CAMPOS_TAXONOMIA]);
+  const CAMPOS_GRAVADOS = Object.freeze(['id', ...CAMPOS_TEXTO, ...CAMPOS_TAXONOMIA]); // + revisao (opcional)
+  const ACOES_REVISAO = Object.freeze(['aprovado', 'rejeitado']);
+  const JUSTIFICATIVA_REVISAO = Object.freeze({ min: 10, max: 300 });
 
   // Oito cenários sintéticos pré-carregados (R09). Somente dados fictícios.
   const EXEMPLOS = Object.freeze([
@@ -79,14 +81,43 @@
     return { ok: Object.keys(erros).length === 0, erros, valor };
   }
 
+  // Valida uma revisão humana simulada {acao, justificativa, dataHora} diante da decisão do motor.
+  // Devolve {campo: mensagem}; objeto vazio = válida. Regra central (CA07):
+  // cenário "Não autorizado" NUNCA pode ser aprovado — revisão não altera a classificação.
+  function validarRevisao(revisao, decisao) {
+    const r = revisao && typeof revisao === 'object' ? revisao : {};
+    const erros = {};
+    if (!ACOES_REVISAO.includes(r.acao)) erros.acao = 'Escolha Aprovar ou Rejeitar.';
+    else if (r.acao === 'aprovado' && decisao === politica().DECISAO.NAO_AUTORIZADO) {
+      erros.acao = 'Cenário Não autorizado não pode ser aprovado: a revisão humana não altera a classificação.';
+    }
+    const j = typeof r.justificativa === 'string' ? r.justificativa.trim() : '';
+    if (j.length < JUSTIFICATIVA_REVISAO.min) erros.justificativa = `Justificativa obrigatória (mínimo de ${JUSTIFICATIVA_REVISAO.min} caracteres).`;
+    else if (j.length > JUSTIFICATIVA_REVISAO.max) erros.justificativa = `Máximo de ${JUSTIFICATIVA_REVISAO.max} caracteres.`;
+    else {
+      const segredo = detectarSegredo(j);
+      if (segredo) erros.justificativa = `Texto ${segredo}. Use apenas dados fictícios.`;
+    }
+    if (typeof r.dataHora !== 'string' || Number.isNaN(Date.parse(r.dataHora))) erros.dataHora = 'Data da revisão inválida.';
+    return erros;
+  }
+
   // Acrescenta decisão, regra e motivo calculados pelo motor (nunca lidos do armazenamento).
   function classificarRegistro(registro) {
     const r = politica().classificar(registro);
-    return Object.freeze({ ...registro, decisao: r.decisao, regra: r.regra, motivo: [r.motivo, ...r.alertas].join(' ') });
+    const revisao = registro.revisao ? Object.freeze({ ...registro.revisao }) : undefined;
+    const final = { ...registro, decisao: r.decisao, regra: r.regra, motivo: [r.motivo, ...r.alertas].join(' ') };
+    if (revisao) final.revisao = revisao; else delete final.revisao;
+    return Object.freeze(final);
   }
 
   function somenteCamposGravados(registro) {
-    return Object.fromEntries(CAMPOS_GRAVADOS.map((campo) => [campo, registro[campo]]));
+    const base = Object.fromEntries(CAMPOS_GRAVADOS.map((campo) => [campo, registro[campo]]));
+    if (registro.revisao) {
+      const { acao, justificativa, dataHora } = registro.revisao;
+      base.revisao = { acao, justificativa, dataHora };
+    }
+    return base;
   }
 
   function proximoId(cenarios) {
@@ -112,7 +143,7 @@
     }
     if (bruto === null) {
       const gravacao = salvar(armazenamento, EXEMPLOS);
-      return { cenarios: exemplosClassificados(), aviso: gravacao.aviso };
+      return { cenarios: exemplosClassificados(), aviso: gravacao.aviso, semeado: true };
     }
     let lista;
     try { lista = JSON.parse(bruto); } catch { lista = null; }
@@ -128,10 +159,22 @@
       return true;
     });
     const descartados = lista.length - validos.length;
-    return {
-      cenarios: validos.map((item) => classificarRegistro(somenteCamposGravados(item))),
-      aviso: descartados > 0 ? `${descartados} registro(s) local(is) inválido(s) foram ignorados.` : null
-    };
+    let revisoesDescartadas = 0;
+    const cenarios = validos.map((item) => {
+      const { revisao, ...base } = somenteCamposGravados(item);
+      const classificado = classificarRegistro(base);
+      if (item.revisao === undefined) return classificado;
+      // Revisão inválida ou adulterada (ex.: "aprovado" em Não autorizado) é descartada; o cenário fica.
+      if (Object.keys(validarRevisao(revisao, classificado.decisao)).length > 0) {
+        revisoesDescartadas += 1;
+        return classificado;
+      }
+      return classificarRegistro({ ...base, revisao: { ...revisao, justificativa: revisao.justificativa.trim() } });
+    });
+    const avisos = [];
+    if (descartados > 0) avisos.push(`${descartados} registro(s) local(is) inválido(s) foram ignorados.`);
+    if (revisoesDescartadas > 0) avisos.push(`${revisoesDescartadas} revisão(ões) inválida(s) ou incompatível(is) com a decisão do motor foram descartadas.`);
+    return { cenarios, aviso: avisos.length ? avisos.join(' ') : null };
   }
 
   // Grava apenas os campos de entrada (sem decisão). Devolve {ok, aviso}.
@@ -166,8 +209,8 @@
   }
 
   global.GovsafeCenarios = Object.freeze({
-    CHAVE, LIMITES, EXEMPLOS,
-    validar, detectarSegredo, normalizar, proximoId,
+    CHAVE, LIMITES, EXEMPLOS, ACOES_REVISAO, JUSTIFICATIVA_REVISAO,
+    validar, validarRevisao, classificarRegistro, detectarSegredo, normalizar, proximoId,
     carregar, salvar, limpar, adicionar, filtrar, exemplosClassificados
   });
 })(globalThis);

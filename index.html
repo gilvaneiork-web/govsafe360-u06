@@ -25,6 +25,8 @@
         <li><a href="#dashboard">Painel</a></li>
         <li><a href="#cadastro">Cadastro</a></li>
         <li><a href="#matriz">Matriz</a></li>
+        <li><a href="#revisao">Revisão</a></li>
+        <li><a href="#auditoria">Auditoria</a></li>
         <li><a href="#limites">Limites</a></li>
       </ul>
     </nav>
@@ -32,7 +34,7 @@
 
   <main id="conteudo" tabindex="-1">
     <h1>Painel de governança de IA</h1>
-    <p id="status">Marco 3 — cadastro, busca e filtro com dados salvos apenas neste navegador. Decisões calculadas pelo motor único (js/politica.js).</p>
+    <p id="status">Marco 4 — revisão humana simulada, auditoria local e exportações CSV/JSON. Decisões calculadas pelo motor único (js/politica.js); a revisão nunca as altera.</p>
     <p id="aviso-armazenamento" class="alerta" role="status" hidden></p>
 
     <section id="dashboard" aria-labelledby="titulo-painel">
@@ -101,7 +103,10 @@
           </select>
         </div>
       </div>
-      <p id="contagem" class="contagem" aria-live="polite"></p>
+      <div class="barra">
+        <p id="contagem" class="contagem" aria-live="polite"></p>
+        <button type="button" id="exportar-csv" class="botao botao-secundario">Exportar matriz (CSV)</button>
+      </div>
       <p id="vazio" class="vazio" hidden>Nenhum cenário encontrado. Ajuste a busca ou o filtro, ou cadastre um cenário.</p>
       <div class="table-wrap" tabindex="0" role="region" aria-labelledby="titulo-matriz">
         <table>
@@ -115,6 +120,7 @@
               <th scope="col">Ambiente</th>
               <th scope="col">Autonomia</th>
               <th scope="col">Decisão</th>
+              <th scope="col">Revisão</th>
               <th scope="col">Motivo</th>
             </tr>
           </thead>
@@ -125,6 +131,47 @@
       </div>
     </section>
 
+    <section id="revisao" aria-labelledby="titulo-revisao">
+      <h2 id="titulo-revisao">Revisão humana simulada</h2>
+      <p class="ajuda">Registra a análise de uma pessoa. A revisão <strong>não altera</strong> a decisão do motor, e cenários Não autorizados não podem ser aprovados.</p>
+      <form id="form-revisao" novalidate>
+        <div class="campos">
+          <div class="campo campo-largo">
+            <label for="r-cenario">Cenário <span class="obrigatorio">(obrigatório)</span></label>
+            <select id="r-cenario" name="cenarioId" required aria-describedby="erro-r-cenarioId nota-revisao"></select>
+            <p class="erro" id="erro-r-cenarioId" hidden></p>
+            <p class="nota" id="nota-revisao" hidden></p>
+          </div>
+          <fieldset class="campo campo-largo grupo-opcoes" aria-describedby="erro-r-acao">
+            <legend>Ação <span class="obrigatorio">(obrigatório)</span></legend>
+            <label class="opcao"><input type="radio" name="acao" value="aprovado" id="r-aprovar"> Aprovar (simulado)</label>
+            <label class="opcao"><input type="radio" name="acao" value="rejeitado" id="r-rejeitar"> Rejeitar (simulado)</label>
+            <p class="erro" id="erro-r-acao" hidden></p>
+          </fieldset>
+          <div class="campo campo-largo">
+            <label for="r-justificativa">Justificativa da revisão <span class="obrigatorio">(obrigatório, mínimo de 10 caracteres)</span></label>
+            <textarea id="r-justificativa" name="justificativa" rows="3" maxlength="300" required aria-describedby="erro-r-justificativa"></textarea>
+            <p class="erro" id="erro-r-justificativa" hidden></p>
+          </div>
+        </div>
+        <div class="acoes">
+          <button type="submit" class="botao">Registrar revisão</button>
+        </div>
+        <p id="mensagem-revisao" class="mensagem" role="status"></p>
+      </form>
+    </section>
+
+    <section id="auditoria" aria-labelledby="titulo-auditoria">
+      <h2 id="titulo-auditoria">Auditoria local</h2>
+      <p class="ajuda">Histórico salvo só neste navegador. Não é imutável e não tem valor institucional.</p>
+      <div class="barra">
+        <p id="contagem-auditoria" class="contagem" aria-live="polite"></p>
+        <button type="button" id="exportar-json" class="botao botao-secundario">Exportar auditoria (JSON)</button>
+      </div>
+      <p id="auditoria-vazia" class="vazio" hidden>Nenhum evento registrado.</p>
+      <ol id="lista-auditoria" class="lista-auditoria"></ol>
+    </section>
+
     <section id="limites" aria-labelledby="titulo-limites">
       <h2 id="titulo-limites">Limites do laboratório</h2>
       <ul class="limites">
@@ -133,6 +180,7 @@
         <li>Não há login, banco de dados, API nem conexão com sistemas oficiais.</li>
         <li>As decisões são didáticas e não substituem normas nem autorizações oficiais.</li>
         <li>Os cenários ficam salvos só neste navegador (localStorage). Em computador compartilhado, limpe ao terminar.</li>
+        <li>A auditoria é local e não imutável; "Limpar dados locais" apaga cenários e auditoria.</li>
       </ul>
       <div class="acoes">
         <button type="button" id="restaurar" class="botao botao-secundario">Restaurar exemplos</button>
@@ -143,6 +191,7 @@
 
   <script src="js/politica.js"></script>
   <script src="js/cenarios.js"></script>
+  <script src="js/auditoria.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
