@@ -170,6 +170,17 @@ function renderizar() {
   renderizarAuditoria();
 }
 
+// Limpa só a VISÃO (busca + filtro). Não toca em armazenamento, cenários nem auditoria.
+function limparFiltros() {
+  estado.texto = '';
+  estado.decisao = '';
+  $('busca').value = '';
+  $('filtro-decisao').value = '';
+  renderizar();
+  $('contagem').textContent = `Filtros limpos. ${$('contagem').textContent}`;
+  $('busca').focus();
+}
+
 // ---------- Erros de formulário (genérico) ----------
 
 // mapa: { campo: [elementoEntrada, elementoErro] }. Devolve o primeiro elemento com erro.
@@ -368,6 +379,7 @@ function iniciar() {
   $('r-cenario').addEventListener('change', aoMudarCenarioRevisao);
   $('busca').addEventListener('input', (e) => { estado.texto = e.target.value; renderizar(); });
   $('filtro-decisao').addEventListener('change', (e) => { estado.decisao = e.target.value; renderizar(); });
+  $('limpar-filtros').addEventListener('click', limparFiltros);
   $('exportar-csv').addEventListener('click', exportarCSV);
   $('exportar-json').addEventListener('click', exportarJSON);
   $('restaurar').addEventListener('click', restaurarExemplos);
